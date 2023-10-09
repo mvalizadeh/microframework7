@@ -1,8 +1,5 @@
 <?php
 
-use App\Core\Request;
+require_once 'bootstrap/init.php';
 
-require_once 'vendor/autoload.php';
-
-
-$req = new Request();
+echo $_ENV['DB_HOST'];
