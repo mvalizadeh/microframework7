@@ -17,3 +17,10 @@ function dd($var)
     var_dump($var);
     exit;
 }
+
+function view($path)
+{
+    $path = str_replace('.','/',$path);
+    $viewFullPath = BASE_PATH . '/views/' . $path . '.php';
+    require_once $viewFullPath;
+}

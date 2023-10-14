@@ -7,11 +7,13 @@ class Request
 
     private $params;
     private $method;
+    private $uri;
 
     public function __construct()
     {
         $this->params = $_REQUEST;
-        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->method = strtolower($_SERVER['REQUEST_METHOD']);
+        $this->uri = str_replace('/micro7','',strtok($_SERVER['REQUEST_URI'], '?'));
     }
 
     public function method()
@@ -27,5 +29,10 @@ class Request
     public function input($key)
     {
         return $this->params[$key] ?? null;
+    }
+
+    public function uri()
+    {
+        return $this->uri;
     }
 }
