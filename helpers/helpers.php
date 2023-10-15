@@ -18,8 +18,9 @@ function dd($var)
     exit;
 }
 
-function view($path)
+function view($path,$data=null)
 {
+    extract($data);
     $path = str_replace('.','/',$path);
     $viewFullPath = BASE_PATH . '/views/' . $path . '.php';
     require_once $viewFullPath;

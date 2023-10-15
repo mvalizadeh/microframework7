@@ -13,12 +13,25 @@ class Router
     private $currentRoute;
 
     const BASE_CONTROLLER = '\App\Controller\\';
+    const BASE_MIDDLEWARE = '\App\Middleware\\';
 
     public function __construct()
     {
         $this->request = new Request();
         $this->routes = Route::routes();
         $this->currentRoute = $this->findRoute($this->request) ?? null;
+        $this->runMiddleware();
+    }
+
+    private function runMiddleware()
+    {
+        $middlewares = $this->currentRoute['middleware'];
+        if ($this->currentRoute['middleware']) {
+            foreach ($middlewares as $middleware) {
+                $middlewareObj = new $middleware;
+                $middlewareObj->handle();
+            }
+        }
     }
 
     public function findRoute(Request $request)
@@ -55,6 +68,7 @@ class Router
 
     public function run()
     {
+
         # 405 : Invalid request method
         if (!$this->invalidRequest($this->request)) {
             $this->dispatch405();
