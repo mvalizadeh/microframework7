@@ -25,8 +25,8 @@ class Router
 
     private function runMiddleware()
     {
-        $middlewares = $this->currentRoute['middleware'];
-        if ($this->currentRoute['middleware']) {
+        if (isset($this->currentRoute['middleware'])) {
+            $middlewares = $this->currentRoute['middleware'];
             foreach ($middlewares as $middleware) {
                 $middlewareObj = new $middleware;
                 $middlewareObj->handle();
@@ -37,11 +37,33 @@ class Router
     public function findRoute(Request $request)
     {
         foreach ($this->routes as $route) {
-            if (in_array($request->method(), $route['methods']) && $request->uri() == $route['uri']) {
+            if (!in_array($request->method(), $route['methods'])) {
+                return false;
+            }
+
+            if ($this->regexMatched($route)) {
                 return $route;
             }
         }
         return null;
+    }
+
+    public function regexMatched($route)
+    {
+        global $request;
+        $pattern = "/^" . str_replace(['/', '{', '}'], ['\/', '(?<', '>[-%\w]+)'], $route['uri']) . "$/";
+        // var_dump($pattern);
+        $result = preg_match($pattern, $this->request->uri(), $matches);
+        if (!$result) {
+            return false;
+        }
+        foreach ($matches as $key => $value) {
+            if (!is_int($key)) {
+                $request->addRouteParams($key, $value);
+            }
+        }
+
+        return true;
     }
 
     public function invalidRequest(Request $request)

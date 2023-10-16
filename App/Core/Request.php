@@ -13,7 +13,7 @@ class Request
     {
         $this->params = $_REQUEST;
         $this->method = strtolower($_SERVER['REQUEST_METHOD']);
-        $this->uri = str_replace('/micro7','',strtok($_SERVER['REQUEST_URI'], '?'));
+        $this->uri = str_replace('/micro7', '', strtok($_SERVER['REQUEST_URI'], '?'));
     }
 
     public function method()
@@ -24,6 +24,16 @@ class Request
     public function params()
     {
         return $this->params;
+    }
+
+    public function addRouteParams($key, $value)
+    {
+        $this->params[$key] = $value;
+    }
+
+    public function getRouteParams($key)
+    {
+        return $this->params[$key];
     }
 
     public function input($key)
